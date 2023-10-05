@@ -1,52 +1,67 @@
-const express = require("express")
-const app = express()
-const http = require('http');
-const cors = require("cors")
-app.use(cors())
-const server = http.createServer(app)
+const express = require("express");
+const app = express();
+const http = require("http");
+const cors = require("cors");
+app.use(cors());
+const server = http.createServer(app);
 
-const { Server } = require("socket.io")
+const { Server } = require("socket.io");
 
-const io = new Server (server, {
+const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
   },
-})
+});
 
 let game = {
   gameboard: Array(9).fill(null),
   nextTurn: true,
-  winner: false
-}
+  winner: "",
+};
 
+let connectedPlayers = 0;
 
 server.listen(3001, () => {
-  console.log('Server is running on port 3001');
+  console.log("Server is running on port 3001");
 });
 
-io.on('connection', (socket) => {
-  console.log('NEW USER CONNECTED!', socket.id);
-  
-  socket.on('move', (data) => {//data has game move, move index
-    console.log('Move Played', data.move, data.index);
-    game.gameboard[data.index] = data.move;
-    let result = calculateWinner(game.gameboard)
-    if(result){
-      game.winner = true;
-      socket.emit("winner", game)
-      console.log("EMITTED WINNER TO ALL CLIENTS :) ")
-    }
-    io.emit("game", game)
-    console.log("EMITTED GAME TO ALL CLIENTS :) ")
-  });
+io.on("connection", (socket) => {
+  if (connectedPlayers < 2) {
+    console.log("NEW USER CONNECTED!", socket.id);
 
-  socket.on('disconnect', () => {
-    console.log('USER DISCONNECTED!');
-    game.gameboard = Array(9).fill(null)
-  });
+    let playerSymbol = connectedPlayers === 0 ? "X" : "O";
+    socket.emit("playerSymbol", playerSymbol);
+
+    let client = `Client ${connectedPlayers + 1}`;
+    socket.join(client);
+    console.log("Player Joined - ", client);
+    connectedPlayers++;
+
+    socket.on("move", (data) => {
+      console.log("Move Played", data.move, data.index);
+      game.gameboard[data.index] = data.move;
+      let result = calculateWinner(game.gameboard);
+      if (result) {
+        game.winner = result;
+        io.emit("winner", game); // Notify all clients about the winner
+        console.log("EMITTED WINNER TO ALL CLIENTS :) ");
+      }
+      io.emit("game", game);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("USER DISCONNECTED!");
+      game.gameboard = Array(9).fill(null);
+      connectedPlayers = 0;
+      socket.emit("message", "A player has disconnected"); // Notify all clients about the disconnection
+    });
+  } else {
+    socket.emit("message", "Server is Full :("); // Notify the client that the server is full
+    console.log("Server is Full :(");
+    return;
+  }
 });
-
 
 function calculateWinner(squares) {
   const lines = [
