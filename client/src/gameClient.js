@@ -12,32 +12,38 @@ function TicTacToeGame() {
   const[serverFull, setServerFull] = useState("")
 
   //Update the gamestate after each move is played
-  useEffect(()=>{
-    socket.on("message", (message)=>{
-      setServerFull(message)
-    })
-  })
-  // useEffect(()=>{
-  //   socket.on("refresh", ()=>{
-  //     window.location.reload();
-  //   })
-  // })
   useEffect(() => {
+    // Listen for server messages
+    socket.on("message", (message) => {
+      setServerFull(message);
+    });
+    // Refresh on connection or disconnection
+    // socket.emit("refresh", () => {
+    //   window.location.reload()
+    // });
+
+    // Listen for game updates
     socket.on("game", (game) => {
       setMoves(game.gameboard);
-      setTurn(!turn)
+      setTurn(!turn);
       console.log("UPDATED GAME STATE");
     });
-  //Update the gamestate when a player wins
+
+    // Listen for winner announcement
     socket.on("winner", (data) => {
       setWinner(data.winner);
       console.log("WINNER IS", data.winner);
     });
-  //Decide the first move
+
+    // Listen for player symbol assignment
     socket.on("playerSymbol", (symbol) => {
       setPlayerSymbol(symbol);
     });
-  }); 
+    //Reload the game if either of the players reloads
+    socket.on("reset", () => {
+      window.location.reload();
+    });
+  })
 
   function handleClick(index) {
     //prevent moves change and prevent moves after winner is decided
@@ -48,7 +54,6 @@ function TicTacToeGame() {
     if (playerSymbol !== (turn ? "X" : "O")) {
       return;
     }
-    //change the turn after each move
     // setTurn(!turn);
     moves[index] = playerSymbol;
     //Emit the move to the server
@@ -59,7 +64,7 @@ function TicTacToeGame() {
       {serverFull ? (
         <div>{serverFull}</div>
       ) : (
-        <>
+        <div>
           {!winner && <div>{turn ? "X's Turn" : "O's Turn"}</div>}
           <div>
             <Button value={moves[0]} onClick={() => handleClick(0)} />
@@ -77,14 +82,19 @@ function TicTacToeGame() {
             <Button value={moves[8]} onClick={() => handleClick(8)} />
           </div>
           {winner && <div>Winner is {winner}</div>}
-        </>
+          {winner && <button onClick={()=>{resetBoard(socket)}}>RESET</button>}
+        </div>
       )}
     </div>
   );
 }
 
 function Button({ value, onClick }) {
-  return <button onClick={onClick}>{value}</button>;
+  return <button class="moveBox" onClick={onClick}>{value}</button>;
+}
+function resetBoard({socket}){
+  window.location.reload()
+  socket.emit("reset")
 }
 
 export default TicTacToeGame;

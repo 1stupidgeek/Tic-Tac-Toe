@@ -21,45 +21,65 @@ let game = {
 };
 
 let connectedPlayers = 0;
+// let decideSymbol;
 
 server.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
 
 io.on("connection", (socket) => {
-  if (connectedPlayers < 2) {
-    console.log("NEW USER CONNECTED!", socket.id);
+  try {
+    if (connectedPlayers < 2) {
+      console.log("NEW USER CONNECTED!", socket.id);
+      // io.emit("refresh", "Client DISCONNECTED");
+      let playerSymbol = connectedPlayers === 0 ? "X" : "O";
+      socket.emit("playerSymbol", playerSymbol);
+  
+      let client = `Client ${connectedPlayers + 1}`;
+      socket.join(client);
+      console.log("Player Joined - ", client);
+      connectedPlayers++;
+  
+      socket.on("move", (data) => {
+        console.log("Move Played", data.move, data.index);
+        game.gameboard[data.index] = data.move;
+        let result = calculateWinner(game.gameboard);
+        if (result) {
+          game.winner = result;
+          io.emit("winner", game); // Notify all clients about the winner
+          console.log("EMITTED WINNER TO ALL CLIENTS :) ");
+        }
+        io.emit("game", game);
+      });
 
-    let playerSymbol = connectedPlayers === 0 ? "X" : "O";
-    socket.emit("playerSymbol", playerSymbol);
+      // socket.on("reset", ()=>{
+      //   io.emit("reset")
+      //   connectedPlayers = 0;
+      // })
+      // socket.on("reset", ()=>{
+      //   // game.gameboard = Array(9).fill(null);
+      //   // game.winner = "";
+      //   io.emit("reset");
+      //   connectedPlayers = 0;
+      // })
 
-    let client = `Client ${connectedPlayers + 1}`;
-    socket.join(client);
-    console.log("Player Joined - ", client);
-    connectedPlayers++;
-
-    socket.on("move", (data) => {
-      console.log("Move Played", data.move, data.index);
-      game.gameboard[data.index] = data.move;
-      let result = calculateWinner(game.gameboard);
-      if (result) {
-        game.winner = result;
-        io.emit("winner", game); // Notify all clients about the winner
-        console.log("EMITTED WINNER TO ALL CLIENTS :) ");
-      }
-      io.emit("game", game);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("USER DISCONNECTED!");
-      game.gameboard = Array(9).fill(null);
-      connectedPlayers = 0;
-      socket.emit("message", "A player has disconnected"); // Notify all clients about the disconnection
-    });
-  } else {
-    socket.emit("message", "Server is Full :("); // Notify the client that the server is full
-    console.log("Server is Full :(");
-    return;
+      socket.on("disconnect", () => {
+        console.log("USER DISCONNECTED!");
+        game.gameboard = Array(9).fill(null);
+        connectedPlayers --;
+        socket.emit("message", "A player has disconnected"); // Notify all clients about the disconnection
+        io.emit("reset")
+      });
+    } 
+    
+    else {
+      // Notify the client that the server is full
+      socket.emit("message", "Server is Full :("); 
+      console.log("Server is Full :(");
+      return;
+    }
+  } catch (error) {
+    console.log(error)
   }
 });
 
