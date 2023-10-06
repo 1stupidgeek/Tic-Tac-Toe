@@ -21,7 +21,6 @@ let game = {
 };
 
 let connectedPlayers = 0;
-// let decideSymbol;
 
 server.listen(3001, () => {
   console.log("Server is running on port 3001");
@@ -31,7 +30,7 @@ io.on("connection", (socket) => {
   try {
     if (connectedPlayers < 2) {
       console.log("NEW USER CONNECTED!", socket.id);
-      // io.emit("refresh", "Client DISCONNECTED");
+
       let playerSymbol = connectedPlayers === 0 ? "X" : "O";
       socket.emit("playerSymbol", playerSymbol);
   
@@ -44,7 +43,10 @@ io.on("connection", (socket) => {
         console.log("Move Played", data.move, data.index);
         game.gameboard[data.index] = data.move;
         let result = calculateWinner(game.gameboard);
-        if (result) {
+        if(result === "Draw"){
+          io.emit("draw", "game is drawn")
+        }
+        else if(result){
           game.winner = result;
           io.emit("winner", game); // Notify all clients about the winner
           console.log("EMITTED WINNER TO ALL CLIENTS :) ");
@@ -52,22 +54,12 @@ io.on("connection", (socket) => {
         io.emit("game", game);
       });
 
-      // socket.on("reset", ()=>{
-      //   io.emit("reset")
-      //   connectedPlayers = 0;
-      // })
-      // socket.on("reset", ()=>{
-      //   // game.gameboard = Array(9).fill(null);
-      //   // game.winner = "";
-      //   io.emit("reset");
-      //   connectedPlayers = 0;
-      // })
-
       socket.on("disconnect", () => {
         console.log("USER DISCONNECTED!");
         game.gameboard = Array(9).fill(null);
-        connectedPlayers --;
-        socket.emit("message", "A player has disconnected"); // Notify all clients about the disconnection
+        connectedPlayers = 0;
+        socket.emit("message", "A player has disconnected");
+        // Notify all clients about the disconnection
         io.emit("reset")
       });
     } 
@@ -94,12 +86,21 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6]
   ];
+
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
     }
   }
+
+  // Check for a draw
+  if (squares.every((square) => square !== null)) {
+    return "Draw";
+  }
+
   return false;
 }
+
+
 

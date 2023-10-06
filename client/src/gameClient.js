@@ -9,7 +9,8 @@ function TicTacToeGame() {
   const [moves, setMoves] = useState(Array(9).fill(null));
   const [winner, setWinner] = useState("");
   const [playerSymbol, setPlayerSymbol] = useState("");
-  const[serverFull, setServerFull] = useState("")
+  const [serverFull, setServerFull] = useState("");
+  const [draw, setDraw] = useState("")
 
   //Update the gamestate after each move is played
   useEffect(() => {
@@ -17,10 +18,6 @@ function TicTacToeGame() {
     socket.on("message", (message) => {
       setServerFull(message);
     });
-    // Refresh on connection or disconnection
-    // socket.emit("refresh", () => {
-    //   window.location.reload()
-    // });
 
     // Listen for game updates
     socket.on("game", (game) => {
@@ -39,9 +36,14 @@ function TicTacToeGame() {
     socket.on("playerSymbol", (symbol) => {
       setPlayerSymbol(symbol);
     });
+
     //Reload the game if either of the players reloads
     socket.on("reset", () => {
       window.location.reload();
+    });
+
+    socket.on("draw", () => {
+      setDraw(true)
     });
   })
 
@@ -81,8 +83,8 @@ function TicTacToeGame() {
             <Button value={moves[7]} onClick={() => handleClick(7)} />
             <Button value={moves[8]} onClick={() => handleClick(8)} />
           </div>
-          {winner && <div>Winner is {winner}</div>}
-          {winner && <button onClick={()=>{resetBoard(socket)}}>RESET</button>}
+          {winner ? <div>Winner is {winner}</div> : null}
+          {draw ? <div>Draw</div> : null}
         </div>
       )}
     </div>
@@ -92,9 +94,4 @@ function TicTacToeGame() {
 function Button({ value, onClick }) {
   return <button class="moveBox" onClick={onClick}>{value}</button>;
 }
-function resetBoard({socket}){
-  window.location.reload()
-  socket.emit("reset")
-}
-
 export default TicTacToeGame;
