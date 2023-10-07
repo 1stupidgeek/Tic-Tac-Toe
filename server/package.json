@@ -4,7 +4,7 @@
   "description": "",
   "main": "gameServer.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node gameServer.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
