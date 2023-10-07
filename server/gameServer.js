@@ -62,6 +62,11 @@ io.on("connection", (socket) => {
         // Notify all clients about the disconnection
         io.emit("reset")
       });
+      socket.on("reset",()=> {
+        game.gameboard = Array(9).fill(null);
+        connectedPlayers = 0;
+        io.emit("reset")
+      })
     } 
     
     else {

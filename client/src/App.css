@@ -3,14 +3,76 @@ body{
   justify-content: center;
   align-items: center;
   height: 700px;
-  
+  background-color: black;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #D81E5B;
+}
+
+
+.moveBox:nth-child(1), .moveBox:nth-child(2){
+  border-right: 5px solid #D81E5B;
+}
+/* .moveBox:nth-child(1), .moveBox:nth-child(2), .moveBox:nth-child(3){
+  border-bottom: 5px solid #D81E5B;
+} */
+.row:nth-child(2),.row:nth-child(3){
+  border-bottom: 5px solid #D81E5B
+}
+
+
+.gameBoard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .moveBox {
   width: 100px;
   height: 100px;
   padding: 0;
   margin: 0;
-  /* border: none; */
+  border: none;
   outline: none;
   vertical-align: top;
+  background-color: transparent;
+  color: #D81E5B;
+  font-weight: bold;
+  font-size: 2rem;
 }
+
+.turn{
+  color:white;
+  font-size: 2em;
+  padding-bottom: 1.5em;
+}
+
+.result{
+  color:white;
+  font-size: 2em;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.winner{
+  color:#D81E5B
+}
+
+.reset{
+  border: none;
+  background-color: rgb(6, 197, 6);
+  border-radius: 1px;
+  height: 1.3em;
+  font-size: 1em;
+  font-weight: 500;
+  color: white;
+}
+
+/* .reset{
+  width: full;
+} */
+
+/* .serverFull{
+  
+} */
+
+

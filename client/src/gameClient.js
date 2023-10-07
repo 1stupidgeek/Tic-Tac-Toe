@@ -64,27 +64,28 @@ function TicTacToeGame() {
   return (
     <div>
       {serverFull ? (
-        <div>{serverFull}</div>
+        <div class="serverFull">{serverFull}</div>
       ) : (
-        <div>
-          {!winner && <div>{turn ? "X's Turn" : "O's Turn"}</div>}
-          <div>
+        <div class="gameBoard">
+          {<div class="turn">{turn ? "X's Turn" : "O's Turn"}</div>}
+          <div class="row">
             <Button value={moves[0]} onClick={() => handleClick(0)} />
             <Button value={moves[1]} onClick={() => handleClick(1)} />
             <Button value={moves[2]} onClick={() => handleClick(2)} />
           </div>
-          <div>
+          <div class="row">
             <Button value={moves[3]} onClick={() => handleClick(3)} />
             <Button value={moves[4]} onClick={() => handleClick(4)} />
             <Button value={moves[5]} onClick={() => handleClick(5)} />
           </div>
-          <div>
+          <div class="row">
             <Button value={moves[6]} onClick={() => handleClick(6)} />
             <Button value={moves[7]} onClick={() => handleClick(7)} />
             <Button value={moves[8]} onClick={() => handleClick(8)} />
           </div>
-          {winner ? <div>Winner is {winner}</div> : null}
-          {draw ? <div>Draw</div> : null}
+          {winner ? <div class="result">Winner is <span class="winner">{winner}</span></div> : null}
+          {draw ? <div class="result">Draw</div> : null}
+          {(winner || draw) && <button style={{ width: '60%' }} class="reset" onClick={(socket)=>{reset(socket)}}>RESET</button>}
         </div>
       )}
     </div>
@@ -93,5 +94,9 @@ function TicTacToeGame() {
 
 function Button({ value, onClick }) {
   return <button class="moveBox" onClick={onClick}>{value}</button>;
+}
+
+function reset(io){
+  socket.emit("reset")
 }
 export default TicTacToeGame;
