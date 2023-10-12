@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 
 const io = new Server(server, {
   cors: {
-    origin: "https://tic-tac-toe-client-phi.vercel.app",
+    origin: "https://tic-tac-toe-client-nine.vercel.app",
     methods: ["GET", "POST"],
   },
 });
