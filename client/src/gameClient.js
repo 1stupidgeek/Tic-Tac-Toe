@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3001");
+const socket = io("https://game-sever-9xxcdj4rv-madkid49.vercel.app/");
 
 function TicTacToeGame() {
   const [turn, setTurn] = useState(true);
