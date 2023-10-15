@@ -7,13 +7,13 @@ const server = http.createServer(app);
 
 const { Server } = require("socket.io");
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World');
-// });
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
 
 const io = new Server(server, {
   cors: {
-    origin: "http://client-lqkm2ji8a-madkid49.vercel.app/",
+    origin: "http://client-lqkm2ji8a-madkid49.vercel.app",
     methods: ["GET", "POST"],
   },
 });
