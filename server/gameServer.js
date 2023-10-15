@@ -13,7 +13,7 @@ const { Server } = require("socket.io");
 
 const io = new Server(server, {
   cors: {
-    origin: "https://tic-tac-toe-client-nine.vercel.app",
+    origin: "http://client-lqkm2ji8a-madkid49.vercel.app/",
     methods: ["GET", "POST"],
   },
 });
