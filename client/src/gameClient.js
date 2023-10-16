@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import io from "socket.io-client";
 
-const socket = io("localhost:3001");
+const socket = io("https://node-server-nine-psi.vercel.app");
 
 function TicTacToeGame() {
   const [turn, setTurn] = useState(true);
@@ -11,7 +11,7 @@ function TicTacToeGame() {
   const [playerSymbol, setPlayerSymbol] = useState("");
   const [serverFull, setServerFull] = useState("");
   const [draw, setDraw] = useState("")
-
+ 
   //Update the gamestate after each move is played
   useEffect(() => {
     // Listen for server messages

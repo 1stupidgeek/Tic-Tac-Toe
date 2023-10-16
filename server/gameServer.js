@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  res.send('Game Server');
 });
 
 const io = new Server(server, {
