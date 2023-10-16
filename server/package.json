@@ -1,11 +1,11 @@
 {
   "name": "server",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "gameServer.js",
   "scripts": {
-    "start": "node server",
-    "dev": "nodemon server"
+    "start": "node gameServer.js",
+    "dev": "nodemon gameServer.js"
   },
   "keywords": [],
   "author": "",
