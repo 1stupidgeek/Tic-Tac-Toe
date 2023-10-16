@@ -7,9 +7,9 @@ A simple multiplayer Tic-Tac-Toe game implimented in react and socket.io.
 
 This app uses -
 
-**Frontend** - React
+    **Frontend** - React
 
-**Backend**  - Node, Express and Socket.io
+    **Backend**  - Node, Express and Socket.io
 
 ## Available Scripts
 
