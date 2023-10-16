@@ -4,8 +4,7 @@
   "description": "",
   "main": "gameServer.js",
   "scripts": {
-    "start": "node gameServer.js",
-    "dev": "nodemon gameServer.js"
+    "start": "node gameServer.js"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +13,5 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "socket.io": "^4.3.2"
-  },  
-  "devDependencies": {
-    "nodemon": "^2.0.4"
   }
 }
