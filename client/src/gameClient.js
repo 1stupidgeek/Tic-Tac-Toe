@@ -3,10 +3,10 @@ import "./App.css";
 import io from "socket.io-client";
 
 
-// const socket = io("https://game-server1.onrender.com/");
+const socket = io("https://game-server1.onrender.com/");
 
 // Run locally
-const socket = io("localhost:3001");
+// const socket = io("localhost:3001");
 
 function TicTacToeGame() {
   const [turn, setTurn] = useState(true);
