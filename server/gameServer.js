@@ -23,18 +23,30 @@ let game = {
   gameboard: Array(9).fill(null),
   nextTurn: true,
   winner: "",
+  playerSocket: "",
 };
 
+let isFirstConnection = true;
 let connectedPlayers = 0;
+let connectedSockets = [];
 
 server.listen(PORT, () => {
   console.log("Server is running on port 3001");
 });
 
 io.on("connection", (socket) => {
+  if(isFirstConnection){
+    socket.emit("yourMove", "Your Move")
+    socket.broadcast.emit("yourMove", "Opponents Move")
+  }
+  else{
+    socket.emit("yourMove", "Opponents Move")
+  }
+  isFirstConnection = !isFirstConnection;
   try {
     if (connectedPlayers < 2) {
       console.log("NEW USER CONNECTED!", socket.id);
+      if(connectedPlayers == 1){socket.emit("")}
 
       let playerSymbol = connectedPlayers === 0 ? "X" : "O";
       socket.emit("playerSymbol", playerSymbol);
@@ -46,7 +58,10 @@ io.on("connection", (socket) => {
   
       socket.on("move", (data) => {
         console.log("Move Played", data.move, data.index);
+        console.log("DataFrom", socket.id);
         game.gameboard[data.index] = data.move;
+        socket.emit("yourMove", "Opponents Move")
+        socket.broadcast.emit("yourMove", "Your Move")
         let result = calculateWinner(game.gameboard);
         if(result === "Draw"){
           io.emit("draw", "game is drawn")

@@ -4,7 +4,8 @@ import io from "socket.io-client";
 
 // const socket = io("https://node-server-nine-psi.vercel.app");
 // const socket = io("https://node-server-ql2yvzzro-madkid49.vercel.app/");
-const socket = io("https://game-server1.onrender.com/");
+// const socket = io("https://game-server1.onrender.com/");
+const socket = io("localhost:3001");
 
 function TicTacToeGame() {
   const [turn, setTurn] = useState(true);
@@ -12,7 +13,9 @@ function TicTacToeGame() {
   const [winner, setWinner] = useState("");
   const [playerSymbol, setPlayerSymbol] = useState("");
   const [serverFull, setServerFull] = useState("");
-  const [draw, setDraw] = useState("")
+  const [draw, setDraw] = useState("");
+  const [yourMove, setYourMove] = useState();
+  const [oppMove, setOppMove] = useState("");
  
   //Update the gamestate after each move is played
   useEffect(() => {
@@ -20,7 +23,7 @@ function TicTacToeGame() {
     socket.on("message", (message) => {
       setServerFull(message);
     });
-
+    
     // Listen for game updates
     socket.on("game", (game) => {
       setMoves(game.gameboard);
@@ -47,6 +50,11 @@ function TicTacToeGame() {
     socket.on("draw", () => {
       setDraw(true)
     });
+
+    socket.on("yourMove", (data)=>{
+      setYourMove(data)
+    })
+
   })
 
   function handleClick(index) {
@@ -56,12 +64,15 @@ function TicTacToeGame() {
     }
     // Check if it's the player's turn based on playerSymbol
     if (playerSymbol !== (turn ? "X" : "O")) {
+      // setYourMove(true);
       return;
     }
+
+    // setYourMove(turn ? "Opponents Move" : "Your Move")
     // setTurn(!turn);
     moves[index] = playerSymbol;
     //Emit the move to the server
-    socket.emit("move", { move: moves[index], index: index });
+    socket.emit("move", { move: moves[index], index: index, yourMove : yourMove });
   }
   return (
     <div>
@@ -70,6 +81,8 @@ function TicTacToeGame() {
       ) : (
         <div class="gameBoard">
           {<div class="turn">{turn ? "X's Turn" : "O's Turn"}</div>}
+          {!winner && <div>{yourMove}</div>}
+          {<div class="turn">{}</div>}
           <div class="row">
             <Button value={moves[0]} onClick={() => handleClick(0)} />
             <Button value={moves[1]} onClick={() => handleClick(1)} />
