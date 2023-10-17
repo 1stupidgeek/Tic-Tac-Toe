@@ -1,3 +1,5 @@
+/* I'm bad at styling, coding actually*/
+
 body{
   display: flex;
   justify-content: center;
@@ -8,13 +10,10 @@ body{
   color: #D81E5B;
 }
 
-
 .moveBox:nth-child(1), .moveBox:nth-child(2){
   border-right: 5px solid #D81E5B;
 }
-/* .moveBox:nth-child(1), .moveBox:nth-child(2), .moveBox:nth-child(3){
-  border-bottom: 5px solid #D81E5B;
-} */
+
 .row:nth-child(2),.row:nth-child(3){
   border-bottom: 5px solid #D81E5B
 }
@@ -40,10 +39,15 @@ body{
   font-size: 2rem;
 }
 
+.yourMove{
+  padding-bottom: 15px;
+  padding-top: 5px;
+}
+
 .turn{
   color:white;
   font-size: 2em;
-  padding-bottom: 1.5em;
+  padding-bottom: 5px;
 }
 
 .result{
@@ -67,12 +71,10 @@ body{
   color: white;
 }
 
-/* .reset{
-  width: full;
-} */
-
-/* .serverFull{
-  
-} */
-
+.turnAndMove{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 

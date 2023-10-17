@@ -1,15 +1,17 @@
 # Tic-Tac-Toe
 
-A simple multiplayer Tic-Tac-Toe game implimented in react and socket.io.
+A simple multiplayer Tic-Tac-Toe game implimented in react and socket.io
 
-(this isnt the ideal use of socket.io, I created this project for the sake of learning react)
+This game supports 2 players at a time, there isn't room for a third person.
+
+(this isnt the ideal use of socket.io, I created this project for the sake of learning react with web-sockets)
 
 
 This app uses -
 
-    **Frontend** - React
+    Frontend - React
 
-    **Backend**  - Node, Express and Socket.io
+    Backend  - Node, Express and Socket.io
 
 ## Available Scripts
 

@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import io from "socket.io-client";
 
-// const socket = io("https://node-server-nine-psi.vercel.app");
-// const socket = io("https://node-server-ql2yvzzro-madkid49.vercel.app/");
+
 // const socket = io("https://game-server1.onrender.com/");
+
+// Run locally
 const socket = io("localhost:3001");
 
 function TicTacToeGame() {
@@ -13,9 +14,8 @@ function TicTacToeGame() {
   const [winner, setWinner] = useState("");
   const [playerSymbol, setPlayerSymbol] = useState("");
   const [serverFull, setServerFull] = useState("");
-  const [draw, setDraw] = useState("");
-  const [yourMove, setYourMove] = useState();
-  const [oppMove, setOppMove] = useState("");
+  const [draw, setDraw] = useState("")
+  const [yourMove, setYourMove] = useState("")
  
   //Update the gamestate after each move is played
   useEffect(() => {
@@ -23,7 +23,7 @@ function TicTacToeGame() {
     socket.on("message", (message) => {
       setServerFull(message);
     });
-    
+
     // Listen for game updates
     socket.on("game", (game) => {
       setMoves(game.gameboard);
@@ -47,32 +47,30 @@ function TicTacToeGame() {
       window.location.reload();
     });
 
+    // Draw the game
     socket.on("draw", () => {
       setDraw(true)
     });
 
+    //Update your move
     socket.on("yourMove", (data)=>{
       setYourMove(data)
     })
-
   })
 
   function handleClick(index) {
     //prevent moves change and prevent moves after winner is decided
     if (winner || moves[index] !== null) {
-      return;
-    }
-    // Check if it's the player's turn based on playerSymbol
-    if (playerSymbol !== (turn ? "X" : "O")) {
       // setYourMove(true);
       return;
     }
-
-    // setYourMove(turn ? "Opponents Move" : "Your Move")
-    // setTurn(!turn);
+    // Check if it's the player's turn based on playerSymbol, if not, cant play the move
+    if (playerSymbol !== (turn ? "X" : "O")) {
+      return;
+    }
     moves[index] = playerSymbol;
     //Emit the move to the server
-    socket.emit("move", { move: moves[index], index: index, yourMove : yourMove });
+    socket.emit("move", { move: moves[index], index: index });
   }
   return (
     <div>
@@ -80,9 +78,10 @@ function TicTacToeGame() {
         <div class="serverFull">{serverFull}</div>
       ) : (
         <div class="gameBoard">
-          {<div class="turn">{turn ? "X's Turn" : "O's Turn"}</div>}
-          {!winner && <div>{yourMove}</div>}
-          {<div class="turn">{}</div>}
+          <div class="turnAndMove">
+          <div class="turn">{turn ? "X's Turn" : "O's Turn"}</div>
+          {<div class="yourMove">{yourMove}</div>}
+          </div>
           <div class="row">
             <Button value={moves[0]} onClick={() => handleClick(0)} />
             <Button value={moves[1]} onClick={() => handleClick(1)} />
@@ -111,7 +110,7 @@ function Button({ value, onClick }) {
   return <button class="moveBox" onClick={onClick}>{value}</button>;
 }
 
-function reset(io){
+function reset(){
   socket.emit("reset")
 }
 export default TicTacToeGame;
