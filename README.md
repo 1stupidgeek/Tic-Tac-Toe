@@ -1,10 +1,16 @@
 # Tic-Tac-Toe
 
-A simple multiplayer Tic-Tac-Toe game implimented in react and socket.io
+- A simple multiplayer Tic-Tac-Toe game implimented in react and socket.io
 
-This game supports 2 players at a time, there isn't room for a third person.
+• About the Deployments -
 
-(this isnt the ideal use of socket.io, I created this project for the sake of learning react with web-sockets)
+- Frontend is deployed on Vercel.
+
+- Backend is deployed on some free cheap server. Might take some time to connect to the backend (free backend deployments are pretty bad). It'll take 10-20 seconds to start the server (you'll see "you move" or "opponents move" appear when it starts)
+
+- This game supports 2 players at a time, there isn't room for a third person.
+
+• First join plays first 
 
 
 This app uses -
